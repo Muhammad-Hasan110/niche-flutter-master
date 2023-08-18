@@ -19,11 +19,9 @@ import 'package:dio/dio.dart' as dio; // Use a unique prefix for Dio library
 // import 'package:get/get_connect/http.dart' as getConnect;
 
 class EditService extends StatefulWidget {
-  const EditService({
-    Key? key,
-    required this.id,
-  }) : super(key: key);
-  final String id;
+  const EditService({Key? key, required this.sid, required this.cid})
+      : super(key: key);
+  final String sid, cid;
   @override
   State<EditService> createState() => _EditServiceState();
 }
@@ -33,6 +31,8 @@ class _EditServiceState extends State<EditService> {
   int num = 0;
   File? imageFile;
   List<Service>? lister;
+  List<String> ids = ["1", "1", "2", "2", "2", "3", "3", "4", "4"];
+  //String id = ids[widget.cid]
   // Create a new Dio instance
 
   final ImagePicker picker = ImagePicker();
@@ -50,6 +50,8 @@ class _EditServiceState extends State<EditService> {
   void initState() {
     super.initState();
     getapidata();
+    // _fetchCategories();
+    //_fetchSubcategories(widget.)
   }
 
   bool isNumeric(String str) {
@@ -64,7 +66,7 @@ class _EditServiceState extends State<EditService> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String authToken = prefs.getString('token') ?? '';
     // print(authToken);
-    String url = "${_api.baseURL}service/${widget.id}";
+    String url = "${_api.baseURL}service/${widget.sid}";
 
     var result = await https.get(Uri.parse(url), headers: {'Token': authToken});
     print(result.body);
@@ -88,16 +90,8 @@ class _EditServiceState extends State<EditService> {
 
       dio.FormData formData = dio.FormData();
 
-      // if (imageFile != null) {
-      //   formData.files.add(MapEntry(
-      //     'profile_picture',
-      //     await dio.MultipartFile.fromFile(imageFile!.path),
-      //   ));
-      // }
-
       Map<String, String> fields = {
-        'subCategory_id':
-            selectedSubCategory?.subCategoryId.toString() ?? widget.id,
+        'subCategory_id': widget.cid,
         'service_description': descriptionController.text,
         'service_title': titleController.text,
         'service_price': priceController.text,
@@ -119,7 +113,7 @@ class _EditServiceState extends State<EditService> {
       dioInstance.options.headers['token'] = authToken;
 
       dio.Response response = await dioInstance.put(
-        'http://192.168.0.106:3000/service/1',
+        'http://192.168.0.106:3000/service/${widget.sid}',
         data: formData,
       );
 
@@ -154,22 +148,25 @@ class _EditServiceState extends State<EditService> {
         }
       }
       print("heloooooooooooo");
+      setState(() {
+        _fetchSubcategories("2");
+        // selectedSubCategory != null
+        //     ? _fetchSubcategories(selectedCategory!.categoryId.toString())
+        //     : null;
+      });
     });
   }
 
-  Future<void> _fetchSubcategories(int categoryId) async {
-    List<SubCategory>? fetchedSubcategories = await _api
-        .getsubcategory(categoryId.toString()); // Add a null check here
+  Future<void> _fetchSubcategories(String categoryId) async {
+    List<SubCategory>? fetchedSubcategories =
+        await _api.getsubcategory(categoryId);
+    print(subcategories); // Add a null check here
     setState(() {
       subcategories = fetchedSubcategories;
-      for (int j = 0; j < 300; j++) {
-        for (int i = 0; i < subcategories.length; i++) {
-          if (subcategories[i].subCategoryName == lister![0].serviceTitle) {
-            selectedSubCategory = subcategories[i];
-          }
-        }
-      }
-      print(selectedSubCategory!.subCategoryName);
+
+      selectedSubCategory = subcategories[0];
+
+      // print(selectedSubCategory!.subCategoryName);
       print("11111111111111111111111111111");
     });
   }
@@ -232,7 +229,7 @@ class _EditServiceState extends State<EditService> {
             // Fetch subcategories based on selected category
             if (newValue != null) {
               setState(() {
-                _fetchSubcategories(newValue.categoryId!);
+                //  _fetchSubcategories(newValue.categoryId!.toString());
                 check = true;
               });
             }
@@ -333,17 +330,27 @@ class _EditServiceState extends State<EditService> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                IconButton(
-                  onPressed: () => getImage(ImageSource.camera),
-                  icon: const Icon(Icons.camera_alt),
-                  tooltip: "Camera",
-                  iconSize: h * 0.04 + w * 0.04,
+                Column(
+                  children: [
+                    IconButton(
+                      onPressed: () => getImage(ImageSource.camera),
+                      icon: const Icon(Icons.camera_alt),
+                      tooltip: "Camera",
+                      iconSize: h * 0.04 + w * 0.04,
+                    ),
+                    Text("Camera")
+                  ],
                 ),
-                IconButton(
-                  onPressed: () => getImage(ImageSource.gallery),
-                  icon: const Icon(Icons.image),
-                  tooltip: "Gallery",
-                  iconSize: h * 0.04 + w * 0.04,
+                Column(
+                  children: [
+                    IconButton(
+                      onPressed: () => getImage(ImageSource.gallery),
+                      icon: const Icon(Icons.image),
+                      tooltip: "Gallery",
+                      iconSize: h * 0.04 + w * 0.04,
+                    ),
+                    Text("Gallery")
+                  ],
                 ),
               ],
             )
@@ -394,7 +401,9 @@ class _EditServiceState extends State<EditService> {
             ),
           ],
         ),
-        body: lister != null
+        body: lister != null &&
+                selectedCategory != null &&
+                selectedSubCategory != null
             ? SingleChildScrollView(
                 child: Column(
                   children: [
@@ -438,57 +447,72 @@ class _EditServiceState extends State<EditService> {
                           );
                         },
                         child: CircleAvatar(
-                          radius: h * 0.05 + w * 0.05,
-                          backgroundImage: imageFile != null
-                              ? FileImage(File(imageFile!.path))
-                              : NetworkImage(_api.baseURL +
-                                      lister![0].serviceImage.toString())
-                                  as ImageProvider,
-                          child: imageFile != null
-                              ? Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: CircleAvatar(
-                                    radius: h * 0.018 + w * 0.018,
-                                    child: CircleAvatar(
-                                      radius: h * 0.015 + w * 0.015,
-                                      child: const Icon(
-                                        Icons.image,
-                                        color: Colors.white,
-                                      ),
-                                      backgroundColor: Colors.transparent,
-                                    ),
+                            radius: h * 0.05 + w * 0.05,
+                            backgroundImage: imageFile != null
+                                ? FileImage(File(imageFile!.path))
+                                : NetworkImage(_api.baseURL +
+                                        lister![0].serviceImage.toString())
+                                    as ImageProvider,
+                            child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: CircleAvatar(
+                                radius: h * 0.018 + w * 0.018,
+                                child: CircleAvatar(
+                                  radius: h * 0.015 + w * 0.015,
+                                  child: const Icon(
+                                    Icons.image,
+                                    color: Colors.white,
                                   ),
-                                )
-                              : const Icon(
-                                  Icons.camera_alt_outlined,
-                                  size: 50,
+                                  backgroundColor: Colors.transparent,
                                 ),
-                        ),
+                              ),
+                            )),
                       ),
                     ),
-                    StackedDropdown(
+                    // StackedDropdown(
+                    //   width: w * 0.9,
+                    //   height: h * 0.07,
+                    //   showSubCategory:
+                    //       true, // Set to true if you want to show sub-category dropdown
+                    //   title: 'Category',
+                    //   dropdown: categoryDropdown(),
+                    //   fontSize:
+                    //       fonte, // Replace with your actual category dropdown widget
+                    // ),
+                    // StackedDropdown(
+                    //   width: w * 0.9,
+                    //   height: h * 0.07,
+                    //   showSubCategory:
+                    //       check, // Set to true when you want to show sub-category dropdown
+                    //   title: 'Sub-Category',
+                    //   dropdown:
+                    //       subCategoryDropdown(), // Replace with your actual sub-category dropdown widget
+                    //   fontSize:
+                    //       fonte, // Replace with your actual category dropdown widget
+                    // ),
+
+                    StackedContainer(
+                      text: 'Category',
+                      labelText: selectedCategory!.categoryName.toString(),
+                      suffixIcon: Icons.arrow_drop_down,
                       width: w * 0.9,
                       height: h * 0.07,
-                      showSubCategory:
-                          true, // Set to true if you want to show sub-category dropdown
-                      title: 'Category',
-                      dropdown: categoryDropdown(),
-                      fontSize:
-                          fonte, // Replace with your actual category dropdown widget
+                      fontSize: fonte,
+                      controller: titleController,
                     ),
-                    StackedDropdown(
+
+                    StackedContainer(
+                      text: 'SubCategory',
+                      labelText:
+                          selectedSubCategory!.subCategoryName.toString(),
+                      suffixIcon: Icons.arrow_drop_down,
                       width: w * 0.9,
                       height: h * 0.07,
-                      showSubCategory:
-                          check, // Set to true when you want to show sub-category dropdown
-                      title: 'Sub-Category',
-                      dropdown:
-                          subCategoryDropdown(), // Replace with your actual sub-category dropdown widget
-                      fontSize:
-                          fonte, // Replace with your actual category dropdown widget
+                      fontSize: fonte,
+                      controller: titleController,
                     ),
                     StackedContainer(
-                      // text: 'Title',
+                      text: 'Title',
                       labelText: lister![0].serviceTitle.toString(),
                       suffixIcon: Icons.title,
                       width: w * 0.9,
@@ -497,7 +521,7 @@ class _EditServiceState extends State<EditService> {
                       controller: titleController,
                     ),
                     StackedContainer(
-                      // text: 'Description',
+                      text: 'Description',
                       labelText: lister![0].serviceDescription.toString(),
                       //hint: "h"
                       suffixIcon: Icons.description,
@@ -508,7 +532,7 @@ class _EditServiceState extends State<EditService> {
                       allowResizing: true,
                     ),
                     StackedContainer(
-                      // text: 'Price',
+                      text: 'Price',
                       labelText: lister![0].servicePrice.toString(),
                       suffixIcon: Icons.monetization_on_outlined,
                       width: w * 0.9,
@@ -517,7 +541,7 @@ class _EditServiceState extends State<EditService> {
                       controller: priceController,
                     ),
                     StackedContainer(
-                      // text: 'Discount',
+                      text: 'Discount',
                       labelText: 'Discount',
                       suffixIcon: Icons.percent_outlined,
                       width: w * 0.9,
@@ -526,7 +550,7 @@ class _EditServiceState extends State<EditService> {
                       controller: discountController,
                     ),
                     StackedContainer(
-                      // text: 'Duration',
+                      text: 'Duration',
                       labelText: lister![0].duration.toString(),
                       suffixIcon: Icons.date_range,
                       width: w * 0.9,

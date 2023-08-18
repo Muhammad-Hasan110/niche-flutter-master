@@ -192,7 +192,10 @@ class _ServicesState extends State<Services> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => EditService(
-                                      id: lister![index].serviceId.toString(),
+                                      sid: lister![index].serviceId.toString(),
+                                      cid: lister![index]
+                                          .subcategoryId
+                                          .toString(),
                                     ),
                                   ),
                                 );
@@ -235,7 +238,10 @@ class _ServicesState extends State<Services> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => EditService(
-                                      id: lister![index].serviceId.toString(),
+                                      sid: lister![index].serviceId.toString(),
+                                      cid: lister![index]
+                                          .subcategoryId
+                                          .toString(),
                                     ),
                                   ),
                                 );

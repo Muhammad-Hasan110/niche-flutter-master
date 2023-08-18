@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class StackedContainer extends StatelessWidget {
+  final String text;
   final String labelText;
   final IconData suffixIcon;
   final double width;
@@ -9,8 +10,9 @@ class StackedContainer extends StatelessWidget {
   final double fontSize;
   final TextEditingController controller;
   final bool allowResizing;
-final TextInputType textInputType;
+  final TextInputType textInputType;
   StackedContainer({
+    required this.text,
     required this.labelText,
     required this.suffixIcon,
     required this.width,
@@ -18,7 +20,7 @@ final TextInputType textInputType;
     required this.fontSize,
     required this.controller,
     this.allowResizing = false,
-     this.textInputType=TextInputType.text,
+    this.textInputType = TextInputType.text,
   });
 
   @override
@@ -38,7 +40,7 @@ final TextInputType textInputType;
           child: Padding(
             padding: const EdgeInsets.only(right: 3, top: 3, left: 25),
             child: TextField(
-              keyboardType:textInputType,
+              keyboardType: textInputType,
               controller: controller,
               textAlign: TextAlign.start,
               maxLines: allowResizing ? null : 1, // Allow resizing if true
@@ -47,7 +49,7 @@ final TextInputType textInputType;
                 hintText: labelText,
                 hintStyle: GoogleFonts.workSans(
                   fontSize: fontSize,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w200,
                   color: const Color(0xFF4F709C),
                   decoration: TextDecoration.none,
                 ),
@@ -79,7 +81,7 @@ final TextInputType textInputType;
             padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
             color: Colors.white,
             child: Text(
-              labelText,
+              text,
               style: GoogleFonts.workSans(
                 fontSize: fontSize,
                 fontWeight: FontWeight.w500,

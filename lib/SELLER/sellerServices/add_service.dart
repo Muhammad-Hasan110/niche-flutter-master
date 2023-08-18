@@ -424,7 +424,8 @@ class _AddServiceState extends State<AddService> {
                   fonte, // Replace with your actual category dropdown widget
             ),
             StackedContainer(
-              labelText: 'Title',
+              text: "Title",
+              labelText: " ",
               suffixIcon: Icons.title,
               width: w * 0.9,
               height: h * 0.07,
@@ -432,7 +433,8 @@ class _AddServiceState extends State<AddService> {
               controller: titleController,
             ),
             StackedContainer(
-              labelText: 'Description',
+              text: 'Description',
+              labelText: " ",
               suffixIcon: Icons.description,
               width: w * 0.9,
               height: h * 0.2,
@@ -441,7 +443,8 @@ class _AddServiceState extends State<AddService> {
               allowResizing: true,
             ),
             StackedContainer(
-              labelText: 'Price',
+              text: 'Price',
+              labelText: ' ',
               suffixIcon: Icons.monetization_on_outlined,
               width: w * 0.9,
               height: h * 0.07,
@@ -449,7 +452,8 @@ class _AddServiceState extends State<AddService> {
               controller: priceController,
             ),
             StackedContainer(
-              labelText: 'Discount',
+              labelText: 'v',
+              text: 'Discount',
               suffixIcon: Icons.percent_outlined,
               width: w * 0.9,
               height: h * 0.07,
@@ -457,7 +461,8 @@ class _AddServiceState extends State<AddService> {
               controller: discountController,
             ),
             StackedContainer(
-              labelText: 'Duration',
+              labelText: ' ',
+              text: 'Duration',
               suffixIcon: Icons.date_range,
               width: w * 0.9,
               height: h * 0.07,

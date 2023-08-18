@@ -5,7 +5,9 @@ import 'package:login_niche2/DataModler/servicecard.dart';
 import 'package:login_niche2/SELLER/SellerHome/widgets/dashboardCard.dart';
 import 'package:login_niche2/SELLER/SellerHome/widgets/reviewCard.dart';
 import 'package:login_niche2/SELLER/SellerHome/widgets/serviceCard.dart';
+import 'package:login_niche2/SELLER/sellerServices/edit_service.dart';
 import 'package:login_niche2/SELLER/sellerServices/services.dart';
+import 'package:login_niche2/SELLER/sellerServices/servicescreen.dart';
 import 'package:login_niche2/utils/flutterflow/flutter_flow_util.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -234,21 +236,106 @@ class _SellerHomeState extends State<SellerHome> {
                         height: MediaQuery.of(context).size.height * 0.02,
                       ),
                       lister != null
-                          ? ServiceCard(
-                              serviceName: _api.capitalize(
-                                  lister![0].serviceTitle.toString()),
-                              serviceRatings: 4.5,
-                              serviceTime: lister![0].duration!.toInt(),
-                              servicePrice: double.parse(
-                                  lister![0].servicePrice.toString()),
-                              serviceImage: _api.baseURL +
-                                  lister![0].serviceImage.toString(),
-                              ONTap: () {},
+                          ? Column(
+                              children: [
+                                ServiceCard(
+                                  serviceName: _api.capitalize(
+                                      lister![0].serviceTitle.toString()),
+                                  serviceRatings: 4.5,
+                                  serviceTime: lister![0].duration!.toInt(),
+                                  servicePrice: double.parse(
+                                      lister![0].servicePrice.toString()),
+                                  serviceImage: _api.baseURL +
+                                      lister![0].serviceImage.toString(),
+                                  ONTap: () {},
+                                  onEdit: () {
+                                    print('edit');
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EditService(
+                                          sid: lister![0].serviceId.toString(),
+                                          cid: lister![0]
+                                              .subcategoryId
+                                              .toString(),
+                                        ),
+                                      ),
+                                    );
+                                    // Perform edit action
+                                  },
+                                  onDelete: () {
+                                    print('delete');
+                                    // Perform delete action
+                                  },
+                                  onPreview: () {
+                                    // Perform preview action
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            SellerserviceWidget(
+                                                sid: lister![0]
+                                                    .serviceId
+                                                    .toString()),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.02,
+                                ),
+                                ServiceCard(
+                                  serviceName: _api.capitalize(
+                                      lister![1].serviceTitle.toString()),
+                                  serviceRatings: 4.5,
+                                  serviceTime: lister![1].duration!.toInt(),
+                                  servicePrice: double.parse(
+                                      lister![1].servicePrice.toString()),
+                                  serviceImage: _api.baseURL +
+                                      lister![1].serviceImage.toString(),
+                                  ONTap: () {},
+                                  onEdit: () {
+                                    print('edit');
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EditService(
+                                          sid: lister![1].serviceId.toString(),
+                                          cid: lister![1]
+                                              .subcategoryId
+                                              .toString(),
+                                        ),
+                                      ),
+                                    );
+                                    // Perform edit action
+                                  },
+                                  onDelete: () {
+                                    print('delete');
+                                    // Perform delete action
+                                  },
+                                  onPreview: () {
+                                    // Perform preview action
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            SellerserviceWidget(
+                                                sid: lister![1]
+                                                    .serviceId
+                                                    .toString()),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.02,
+                                ),
+                              ],
                             )
                           : Container(color: Colors.red),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
+
                       // ServiceCard(
                       //   serviceName: 'Sofa Cleaning',
                       //   serviceRatings: 4.1,
