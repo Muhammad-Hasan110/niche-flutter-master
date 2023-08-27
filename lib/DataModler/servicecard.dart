@@ -1,101 +1,92 @@
-import 'dart:convert';
-import 'dart:ffi';
-
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:login_niche2/SELLER/SellerHome/widgets/serviceCard.dart';
-
 class Service {
   int? serviceId;
   int? sellerId;
-  int? subcategoryId;
+  String? firstName;
+  String? lastName;
+  String? serviceImage;
+  String? servicePrice;
   String? serviceTitle;
   String? serviceDescription;
-  String? servicePrice;
   int? duration;
-  String? serviceImage;
+  String? profilePicture;
+  String? averageRating;
+  int? totalProjectsCompleted;
+  String? bio;
+  String? userAddress;
+  String? userCity;
+  String? userCountry;
+  int? categoryId;
+  String? categoryName;
+  int? subCategoryId;
+  String? subCategoryName;
 
   Service(
       {this.serviceId,
       this.sellerId,
-      this.subcategoryId,
+      this.firstName,
+      this.lastName,
+      this.serviceImage,
+      this.servicePrice,
       this.serviceTitle,
       this.serviceDescription,
-      this.servicePrice,
       this.duration,
-      this.serviceImage});
+      this.profilePicture,
+      this.averageRating,
+      this.totalProjectsCompleted,
+      this.bio,
+      this.userAddress,
+      this.userCity,
+      this.userCountry,
+      this.categoryId,
+      this.categoryName,
+      this.subCategoryId,
+      this.subCategoryName});
 
   Service.fromJson(Map<String, dynamic> json) {
     serviceId = json['service_id'];
     sellerId = json['seller_id'];
-    subcategoryId = json['subcategory_id'];
+    firstName = json['first_name'];
+    lastName = json['last_name'];
+    serviceImage = json['service_image'];
+    servicePrice = json['service_price'];
     serviceTitle = json['service_title'];
     serviceDescription = json['service_description'];
-    servicePrice = json['service_price'];
     duration = json['duration'];
-    serviceImage = json['service_image'];
+    profilePicture = json['profile_picture'];
+    averageRating = json['average_rating'];
+    totalProjectsCompleted = json['total_projects_completed'];
+    bio = json['bio'];
+    userAddress = json['user_address'];
+    userCity = json['user_city'];
+    userCountry = json['user_country'];
+    categoryId = json['category_id'];
+    categoryName = json['category_name'];
+    subCategoryId = json['subCategory_id'];
+    subCategoryName = json['subCategory_name'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['service_id'] = this.serviceId;
     data['seller_id'] = this.sellerId;
-    data['subcategory_id'] = this.subcategoryId;
+    data['first_name'] = this.firstName;
+    data['last_name'] = this.lastName;
+    data['service_image'] = this.serviceImage;
+    data['service_price'] = this.servicePrice;
     data['service_title'] = this.serviceTitle;
     data['service_description'] = this.serviceDescription;
-    data['service_price'] = this.servicePrice;
     data['duration'] = this.duration;
-    data['service_image'] = this.serviceImage;
+    data['profile_picture'] = this.profilePicture;
+    data['average_rating'] = this.averageRating;
+    data['total_projects_completed'] = this.totalProjectsCompleted;
+    data['bio'] = this.bio;
+    data['user_address'] = this.userAddress;
+    data['user_city'] = this.userCity;
+    data['user_country'] = this.userCountry;
+    data['category_id'] = this.categoryId;
+    data['category_name'] = this.categoryName;
+    data['subCategory_id'] = this.subCategoryId;
+    data['subCategory_name'] = this.subCategoryName;
     return data;
-  }
-}
-
-class Service_Card extends StatefulWidget {
-  const Service_Card({super.key});
-
-  @override
-  State<Service_Card> createState() => _Service_CardState();
-}
-
-class _Service_CardState extends State<Service_Card> {
-  List<Service>? lister;
-
-  @override
-  void initState() {
-    super.initState();
-    getapidata();
-    // print("helooooooooooooo465654545");
-    // print(lister![0].serviceImage);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: lister != null ? getlist() : Container());
-  }
-
-  Widget getlist() {
-    return ListView.builder(
-        itemCount: lister!.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ServiceCard(
-            serviceName: lister![index].serviceTitle.toString(),
-            serviceRatings: 4.9,
-            serviceTime: lister![index].duration!.toInt(),
-            servicePrice: double.parse(lister![index].duration!.toString()),
-            serviceImage: "assets/peter.jpeg",
-            ONTap: () {},
-          );
-        });
-  }
-
-  Future<void> getapidata() async {
-    String url = "http:// 192.168.0.104:3000/service";
-    var result = await http.get(Uri.parse(url));
-    print(result.body);
-    lister = jsonDecode(result.body)
-        .map((item) => Service.fromJson(item))
-        .toList()
-        .cast<Service>();
-    setState(() {});
   }
 }

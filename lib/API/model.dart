@@ -12,54 +12,6 @@ import 'package:login_niche2/utils/helperFunctions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 
-class Service {
-  int? serviceId;
-  int? sellerId;
-  int? subcategoryId;
-  String? serviceTitle;
-  String? serviceDescription;
-  String? servicePrice;
-  int? duration;
-  String? serviceImage;
-
-  Service({
-    this.serviceId,
-    this.sellerId,
-    this.subcategoryId,
-    this.serviceTitle,
-    this.serviceDescription,
-    this.servicePrice,
-    this.duration,
-    this.serviceImage,
-  });
-
-  Service.fromJson(Map<String, dynamic> json) {
-    serviceId = json['service_id'];
-    sellerId = json['seller_id'];
-    subcategoryId = json['subcategory_id'];
-    serviceTitle = json['service_title'];
-    serviceDescription = json['service_description'];
-    servicePrice = json['service_price'];
-    duration = json['duration'];
-    serviceImage = json['service_image'];
-    // Update the serviceImage property to handle image loading
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['service_id'] = this.serviceId;
-    data['seller_id'] = this.sellerId;
-    data['subcategory_id'] = this.subcategoryId;
-    data['service_title'] = this.serviceTitle;
-    data['service_description'] = this.serviceDescription;
-    data['service_price'] = this.servicePrice;
-    data['duration'] = this.duration;
-    data['service_image'] =
-        this.serviceImage; // Assuming serviceImage is in base64
-    return data;
-  }
-}
-
 class SubCategory {
   int? subCategoryId;
   String? subCategoryName;

@@ -107,26 +107,25 @@ class _Seller_ProfileState extends State<Seller_Profile> {
             ),
           ],
         ),
-        body: lister != null
-            ? SingleChildScrollView(
-                child: Column(children: [
-                  Container(
-                    height: height1,
-                    width: w * 1,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          CustomColor.primaryColor,
-                          Colors
-                              .white, // Merge with white for a smooth transition
-                        ],
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 40),
-                      child: Column(
+        body: SingleChildScrollView(
+          child: Column(children: [
+            Container(
+              height: height1,
+              width: w * 1,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    CustomColor.primaryColor,
+                    Colors.white, // Merge with white for a smooth transition
+                  ],
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 40),
+                child: lister != null
+                    ? Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -264,100 +263,91 @@ class _Seller_ProfileState extends State<Seller_Profile> {
                             ),
                           ),
                         ],
-                      ),
-                    ),
+                      )
+                    : Container(),
+              ),
+            ),
+            SizedBox(height: h * 0.05),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 20),
+              child: Column(
+                children: [
+                  MenuTile(
+                      title: "App Language",
+                      icon: Icons.language,
+                      fonte: fonte),
+                  MenuTile(
+                      title: "App Theme", icon: Icons.dark_mode, fonte: fonte),
+                  MenuTile(
+                      title: "Change Password",
+                      icon: Icons.lock_reset,
+                      fonte: fonte),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AboutScreen()),
+                      );
+                    },
+                    child: MenuTile(
+                        title: "About Us", icon: Icons.info, fonte: fonte),
                   ),
-                  SizedBox(height: h * 0.05),
+                  MenuTile(
+                      title: "Earning List", icon: Icons.list, fonte: fonte),
                   Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 20),
-                    child: Column(
-                      children: [
-                        MenuTile(
-                            title: "App Language",
-                            icon: Icons.language,
-                            fonte: fonte),
-                        MenuTile(
-                            title: "App Theme",
-                            icon: Icons.dark_mode,
-                            fonte: fonte),
-                        MenuTile(
-                            title: "Change Password",
-                            icon: Icons.lock_reset,
-                            fonte: fonte),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AboutScreen()),
-                            );
-                          },
-                          child: MenuTile(
-                              title: "About Us",
-                              icon: Icons.info,
-                              fonte: fonte),
-                        ),
-                        MenuTile(
-                            title: "Earning List",
-                            icon: Icons.list,
-                            fonte: fonte),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LoginScreen()),
-                                );
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextButton(
-                                  onPressed: () async {
-                                    SharedPreferences prefs =
-                                        await SharedPreferences.getInstance();
-                                    prefs.remove('userEmail');
-                                    prefs.remove('userPassword');
-                                    prefs.remove('token');
-                                    prefs.remove('role');
-                                    prefs.remove('id');
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const LoginScreen()),
-                                    );
-                                  },
-                                  child: Text(
-                                    "Logout",
-                                    style: GoogleFonts.workSans(
-                                      fontSize: fonte,
-                                      fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF4F709C),
-                                      decoration: TextDecoration.none,
-                                    ),
-                                  ),
-                                ),
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginScreen()),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextButton(
+                            onPressed: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              prefs.remove('userEmail');
+                              prefs.remove('userPassword');
+                              prefs.remove('token');
+                              prefs.remove('role');
+                              prefs.remove('id');
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginScreen()),
+                              );
+                            },
+                            child: Text(
+                              "Logout",
+                              style: GoogleFonts.workSans(
+                                fontSize: fonte,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF4F709C),
+                                decoration: TextDecoration.none,
                               ),
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  )
-                ]),
-              )
-            : Container());
+                  ),
+                ],
+              ),
+            )
+          ]),
+        ));
   }
 
   Future<void> getapidata() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String authToken = prefs.getString('token') ?? '';
-    String url = "${_api.vieweseller}";
+    String url = "${_api.baseURL}seller/viewprofile";
 
     var result = await http.get(Uri.parse(url), headers: {'Token': authToken});
     print(result.body);

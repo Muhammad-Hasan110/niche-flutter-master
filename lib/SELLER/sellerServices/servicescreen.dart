@@ -228,7 +228,7 @@ class _SellerserviceWidgetState extends State<SellerserviceWidget> {
                                                       EditService(
                                                           sid: widget.sid,
                                                           cid: lister![0]
-                                                              .subcategoryId
+                                                              .subCategoryId
                                                               .toString())));
                                         },
                                         text: 'Edit',

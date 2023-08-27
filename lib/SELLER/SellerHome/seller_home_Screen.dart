@@ -1,6 +1,5 @@
-// ignore_for_file: avoid_print, file_names, library_private_types_in_public_api
-
 import 'package:login_niche2/API/API.dart';
+import 'package:login_niche2/Data%20Integration/getService.dart';
 import 'package:login_niche2/DataModler/servicecard.dart';
 import 'package:login_niche2/SELLER/SellerHome/widgets/dashboardCard.dart';
 import 'package:login_niche2/SELLER/SellerHome/widgets/reviewCard.dart';
@@ -9,7 +8,6 @@ import 'package:login_niche2/SELLER/sellerServices/edit_service.dart';
 import 'package:login_niche2/SELLER/sellerServices/services.dart';
 import 'package:login_niche2/SELLER/sellerServices/servicescreen.dart';
 import 'package:login_niche2/utils/flutterflow/flutter_flow_util.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,7 +27,8 @@ class _SellerHomeState extends State<SellerHome> {
   late HomePageModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Service>? lister;
+  List<Service> services = [];
+  final getservice = GetService();
 
   final _api = API();
 
@@ -37,7 +36,7 @@ class _SellerHomeState extends State<SellerHome> {
   void initState() {
     super.initState();
     _model = createModel(context, () => HomePageModel());
-    getapidata();
+    // getapidata();
   }
 
   @override
@@ -166,248 +165,232 @@ class _SellerHomeState extends State<SellerHome> {
                     ),
                   ],
                 ),
-                // SizedBox(
-                //   height: MediaQuery.of(context).size.height * 0.01,
-                // ),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'My Services',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF213555),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AddService()),
-                                    );
-                                  },
-                                  child: const Text(
-                                    'Add a Service',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: Color(0xFF4F709C),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: Get.width * 0.04,
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const Services()),
-                                    );
-                                  },
-                                  child: const Text(
-                                    'View All',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: Color(0xFF4F709C),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      lister != null
-                          ? Column(
-                              children: [
-                                ServiceCard(
-                                  serviceName: _api.capitalize(
-                                      lister![0].serviceTitle.toString()),
-                                  serviceRatings: 4.5,
-                                  serviceTime: lister![0].duration!.toInt(),
-                                  servicePrice: double.parse(
-                                      lister![0].servicePrice.toString()),
-                                  serviceImage: _api.baseURL +
-                                      lister![0].serviceImage.toString(),
-                                  ONTap: () {},
-                                  onEdit: () {
-                                    print('edit');
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => EditService(
-                                          sid: lister![0].serviceId.toString(),
-                                          cid: lister![0]
-                                              .subcategoryId
-                                              .toString(),
-                                        ),
-                                      ),
-                                    );
-                                    // Perform edit action
-                                  },
-                                  onDelete: () {
-                                    print('delete');
-                                    // Perform delete action
-                                  },
-                                  onPreview: () {
-                                    // Perform preview action
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            SellerserviceWidget(
-                                                sid: lister![0]
-                                                    .serviceId
-                                                    .toString()),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.02,
-                                ),
-                                ServiceCard(
-                                  serviceName: _api.capitalize(
-                                      lister![1].serviceTitle.toString()),
-                                  serviceRatings: 4.5,
-                                  serviceTime: lister![1].duration!.toInt(),
-                                  servicePrice: double.parse(
-                                      lister![1].servicePrice.toString()),
-                                  serviceImage: _api.baseURL +
-                                      lister![1].serviceImage.toString(),
-                                  ONTap: () {},
-                                  onEdit: () {
-                                    print('edit');
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => EditService(
-                                          sid: lister![1].serviceId.toString(),
-                                          cid: lister![1]
-                                              .subcategoryId
-                                              .toString(),
-                                        ),
-                                      ),
-                                    );
-                                    // Perform edit action
-                                  },
-                                  onDelete: () {
-                                    print('delete');
-                                    // Perform delete action
-                                  },
-                                  onPreview: () {
-                                    // Perform preview action
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            SellerserviceWidget(
-                                                sid: lister![1]
-                                                    .serviceId
-                                                    .toString()),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.02,
-                                ),
-                              ],
-                            )
-                          : Container(color: Colors.red),
+                      FutureBuilder(
+                          future: getservice.getapidata(services),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.6,
+                                child: ListView.builder(
+                                    itemCount: 5,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return index == 0
+                                          ? Column(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(5.0),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      const Text(
+                                                        'My Services',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color:
+                                                              Color(0xFF213555),
+                                                        ),
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            const AddService()),
+                                                              );
+                                                            },
+                                                            child: const Text(
+                                                              'Add a Service',
+                                                              style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Color(
+                                                                    0xFF4F709C),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: Get.width *
+                                                                0.04,
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            const Services()),
+                                                              );
+                                                            },
+                                                            child: const Text(
+                                                              'View All',
+                                                              style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Color(
+                                                                    0xFF4F709C),
+                                                              ),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.02,
+                                                ),
+                                              ],
+                                            )
+                                          : index <= 2 && index > 0
+                                              ? Stack(children: [
+                                                  ServiceCard(
+                                                    serviceName: services[index]
+                                                        .serviceTitle
+                                                        .toString(),
+                                                    serviceRatings: 4.9,
+                                                    serviceTime: services[index]
+                                                        .duration!
+                                                        .toInt(),
+                                                    servicePrice: double.parse(
+                                                        services[index]
+                                                            .duration!
+                                                            .toString()),
+                                                    serviceImage: _api.baseURL +
+                                                        services[index]
+                                                            .serviceImage
+                                                            .toString(),
+                                                    onEdit: () {
+                                                      print('edit');
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              EditService(
+                                                            sid: services[index]
+                                                                .serviceId
+                                                                .toString(),
+                                                            cid: services[index]
+                                                                .subCategoryId
+                                                                .toString(),
+                                                          ),
+                                                        ),
+                                                      );
+                                                      // Perform edit action
+                                                    },
+                                                    onDelete: () {
+                                                      print('delete');
+                                                      // Perform delete action
+                                                    },
+                                                    onPreview: () {
+                                                      // Perform preview action
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              SellerserviceWidget(
+                                                                  sid: services[
+                                                                          0]
+                                                                      .serviceId
+                                                                      .toString()),
+                                                        ),
+                                                      );
+                                                    },
+                                                    ONTap: () {},
+                                                  ),
+                                                ])
+                                              : Column(children: [
+                                                  SizedBox(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.02,
+                                                  ),
 
-                      // ServiceCard(
-                      //   serviceName: 'Sofa Cleaning',
-                      //   serviceRatings: 4.1,
-                      //   serviceTime: '30 mins',
-                      //   servicePrice: 79.99,
-                      //   serviceImage:
-                      //       "https://img.freepik.com/premium-photo/dry-cleaner-s-employee-removing-dirt-from-furniture-flat-closeup_152904-2670.jpg?w=740",
-                      //   onDelete: () {
-                      //     print("assg");
-                      //   },
-                      //   onEdit: () {
-                      //     print('edit');
-                      //   },
-                      // ),
-                      // SizedBox(
-                      //   height: MediaQuery.of(context).size.height * 0.02,
-                      // ),
-                      // ServiceCard(
-                      //     serviceName: 'Car Repairing',
-                      //     serviceRatings: 4.0,
-                      //     serviceTime: '2 hour',
-                      //     servicePrice: 149.99,
-                      //     serviceImage:
-                      //         "https://img.freepik.com/premium-photo/auto-car-repair-service-center-mechanic-examining-car-suspension_136930-6.jpg?w=740"),
+                                                  // Generated code for this Row Widget...
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            5.0),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        const Text(
+                                                          'Reviews',
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: Color(
+                                                                0xFF213555),
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          const Reviews()),
+                                                            );
+                                                            // Add your view all functionality here
+                                                          },
+                                                          child: const Text(
+                                                            'View All',
+                                                            style: TextStyle(
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color: Color(
+                                                                  0xFF4F709C),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const ReviewCard(
+                                                    name: 'Peter Parker',
+                                                    date: '02 Dec',
+                                                    rating: 4.5,
+                                                    review:
+                                                        'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet.',
+                                                    image: 'assets/peter.jpeg',
+                                                  )
+                                                ]);
+                                    }),
+                              );
+                            }
 
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-
-                      // Generated code for this Row Widget...
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Reviews',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF213555),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const Reviews()),
-                                );
-                                // Add your view all functionality here
-                              },
-                              child: const Text(
-                                'View All',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xFF4F709C),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const ReviewCard(
-                        name: 'Peter Parker',
-                        date: '02 Dec',
-                        rating: 4.5,
-                        review:
-                            'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet.',
-                        image: 'assets/peter.jpeg',
-                      )
+                            return Center(child: CircularProgressIndicator());
+                          }),
                     ],
                   ),
                 ),
@@ -417,16 +400,5 @@ class _SellerHomeState extends State<SellerHome> {
         ),
       ),
     );
-  }
-
-  Future<void> getapidata() async {
-    String url = "${_api.baseURL}service";
-    var result = await http.get(Uri.parse(url));
-    print(result.body);
-    lister = jsonDecode(result.body)
-        .map((item) => Service.fromJson(item))
-        .toList()
-        .cast<Service>();
-    setState(() {});
   }
 }

@@ -7,6 +7,7 @@ import 'package:login_niche2/BUYER/buyerCatrgories/widgets/ServiceCard.dart';
 import 'package:login_niche2/BUYER/buyerHome/buyerhome.dart';
 import 'package:login_niche2/BUYER/buyerHome/widgets/drawer.dart';
 import 'package:login_niche2/BUYER/buyerNavbar/navbar_buyer.dart';
+import 'package:login_niche2/DataModler/servicecard.dart';
 import 'package:login_niche2/utils/flutterflow/flutter_flow_drop_down.dart';
 import 'package:login_niche2/utils/flutterflow/flutter_flow_theme.dart';
 import 'package:login_niche2/utils/flutterflow/flutter_flow_util.dart';
@@ -703,7 +704,7 @@ class _SubCategorySevicesScreenState extends State<SubCategorySevicesScreen> {
       print(services![0]);
       services2 = services!
           .where(
-            (service) => service.subcategoryId.toString() == widget.sid,
+            (service) => service.subCategoryId.toString() == widget.sid,
             // ignore: null_closures
           )
           .toList();

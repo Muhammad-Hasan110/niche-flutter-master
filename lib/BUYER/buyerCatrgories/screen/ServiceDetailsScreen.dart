@@ -9,6 +9,7 @@ import 'package:login_niche2/BUYER/buyerCatrgories/model/ServiceDetailModel.dart
 import 'package:login_niche2/BUYER/buyerCatrgories/screen/SubCategorySevicesScreen.dart';
 import 'package:login_niche2/BUYER/buyerCatrgories/widgets/ReviewCard.dart';
 import 'package:login_niche2/BUYER/buyerCheckOut/screen/buyerCheckOutScreen.dart';
+import 'package:login_niche2/DataModler/servicecard.dart';
 import 'package:login_niche2/utils/flutterflow/flutter_flow_icon_button.dart';
 import 'package:login_niche2/utils/flutterflow/flutter_flow_theme.dart';
 import 'package:login_niche2/utils/flutterflow/flutter_flow_util.dart';
@@ -142,7 +143,7 @@ class _ServiceDetailScreenState extends State<ServiceDetailScreen> {
                                                 SubCategorySevicesScreen(
                                                     pid: widget.pid,
                                                     sid: services![0]
-                                                        .subcategoryId
+                                                        .subCategoryId
                                                         .toString())));
                                   },
                                   child: Icon(

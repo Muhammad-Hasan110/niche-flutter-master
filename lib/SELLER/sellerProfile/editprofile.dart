@@ -17,6 +17,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:login_niche2/API/model.dart';
 import 'package:login_niche2/BUYER/buyerNavbar/navbar_buyer.dart';
 import 'package:login_niche2/BUYER/buyerProfile1/buyer_profile_screen.dart';
+import 'package:login_niche2/SELLER/sellerNavbar/seller_navbar.dart';
 import 'package:login_niche2/SELLER/sellerProfile/seller_profile.dart';
 import 'package:login_niche2/utils/helperFunctions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -103,11 +104,11 @@ class _EditProfileState extends State<EditProfile> {
 
       dio.Response response = widget.role == "buyer"
           ? await dioInstance.put(
-              _api.updatebuyer,
+              "${_api.baseURL}buyer/",
               data: formData,
             )
           : await dioInstance.put(
-              _api.updateseller,
+              "${_api.baseURL}seller/updateprofile",
               data: formData,
             );
 
@@ -117,10 +118,8 @@ class _EditProfileState extends State<EditProfile> {
         successPopUp(context, 'Profile Updated',
             'Your profile has been successfully updated', 'success.json', () {
           if (widget.role == "seller") {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const Seller_Profile()));
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const NavbarSeller()));
           } else {
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => const NavbarBuyer()));
@@ -459,9 +458,9 @@ class _EditProfileState extends State<EditProfile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String authToken = prefs.getString('token') ?? '';
     print(authToken);
-    String url = "http://192.168.0.106:3000/Buyer";
-
-    //  widget.role == "buyer" ? _api.viewbuyer : _api.vieweseller;
+    String url = widget.role == "buyer"
+        ? "${_api.baseURL}buyer/"
+        : "${_api.baseURL}seller/viewprofile";
 
     var result = await http.get(Uri.parse(url), headers: {'Token': authToken});
     print(result.body);

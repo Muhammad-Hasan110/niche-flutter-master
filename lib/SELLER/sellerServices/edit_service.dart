@@ -9,6 +9,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 import 'package:login_niche2/API/API.dart';
 import 'package:login_niche2/API/model.dart';
+import 'package:login_niche2/Data%20Integration/getService.dart';
+import 'package:login_niche2/DataModler/servicecard.dart';
+// import 'package:login_niche2/DataModler/servicecard.dart';
 import 'package:login_niche2/SELLER/sellerServices/widgets/stackedContainer.dart';
 import 'package:login_niche2/SELLER/sellerServices/widgets/stackedDropdown.dart';
 import 'package:login_niche2/utils/helperFunctions.dart';
@@ -29,8 +32,9 @@ class EditService extends StatefulWidget {
 class _EditServiceState extends State<EditService> {
   bool check = false;
   int num = 0;
+  final getservice = GetOneService();
   File? imageFile;
-  List<Service>? lister;
+  List<Service> services = [];
   List<String> ids = ["1", "1", "2", "2", "2", "3", "3", "4", "4"];
   //String id = ids[widget.cid]
   // Create a new Dio instance
@@ -49,9 +53,7 @@ class _EditServiceState extends State<EditService> {
   @override
   void initState() {
     super.initState();
-    getapidata();
-    // _fetchCategories();
-    //_fetchSubcategories(widget.)
+    getservice.getapidata(services, widget.sid);
   }
 
   bool isNumeric(String str) {
@@ -62,25 +64,25 @@ class _EditServiceState extends State<EditService> {
     return double.tryParse(str) != null;
   }
 
-  Future<void> getapidata() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String authToken = prefs.getString('token') ?? '';
-    // print(authToken);
-    String url = "${_api.baseURL}service/${widget.sid}";
+  // Future<void> getapidata() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String authToken = prefs.getString('token') ?? '';
+  //   // print(authToken);
+  //   String url = "${_api.baseURL}service/${widget.sid}";
 
-    var result = await https.get(Uri.parse(url), headers: {'Token': authToken});
-    print(result.body);
-    lister = await jsonDecode(result.body)
-        .map((item) => Service.fromJson(item))
-        .toList()
-        .cast<Service>();
-    print('lister');
-    print(lister?[0].serviceImage);
+  //   var result = await https.get(Uri.parse(url), headers: {'Token': authToken});
+  //   print(result.body);
+  //   lister = await jsonDecode(result.body)
+  //       .map((item) => Service.fromJson(item))
+  //       .toList()
+  //       .cast<Service>();
+  //   print('lister');
+  //   print(lister?[0].serviceImage);
 
-    setState(() {
-      _fetchCategories();
-    });
-  }
+  //   setState(() {
+  //     _fetchCategories();
+  //   });
+  // }
 
   Future<void> updateService() async {
     print("hello");
@@ -132,45 +134,6 @@ class _EditServiceState extends State<EditService> {
     }
   }
 
-  Future<void> _fetchCategories() async {
-    List<Category>? fetchedCategories =
-        await _api.getcategory(); // Add a null check here
-    setState(() {
-      categories = fetchedCategories;
-      print("heloooooooooooo22222222222");
-
-      print(lister![0].serviceImage);
-      print(lister![0].serviceDescription);
-
-      for (int i = 0; i < categories.length; i++) {
-        if (categories[i].categoryId == 1) {
-          selectedCategory = categories[i];
-        }
-      }
-      print("heloooooooooooo");
-      setState(() {
-        _fetchSubcategories("2");
-        // selectedSubCategory != null
-        //     ? _fetchSubcategories(selectedCategory!.categoryId.toString())
-        //     : null;
-      });
-    });
-  }
-
-  Future<void> _fetchSubcategories(String categoryId) async {
-    List<SubCategory>? fetchedSubcategories =
-        await _api.getsubcategory(categoryId);
-    print(subcategories); // Add a null check here
-    setState(() {
-      subcategories = fetchedSubcategories;
-
-      selectedSubCategory = subcategories[0];
-
-      // print(selectedSubCategory!.subCategoryName);
-      print("11111111111111111111111111111");
-    });
-  }
-
   Future getImage(ImageSource media) async {
     var img = await picker.pickImage(source: media);
 
@@ -185,112 +148,6 @@ class _EditServiceState extends State<EditService> {
 
   @override
   Widget build(BuildContext context) {
-    Widget categoryDropdown() {
-      return DropdownButtonFormField<Category>(
-        isExpanded: true,
-        // hint: const Text(
-        //   "Saloon",
-        //   style: TextStyle(
-        //     color: Colors.black54,
-        //     fontSize: 15,
-        //   ),
-        // ),
-        value: selectedCategory,
-        icon: const Icon(
-          Icons.keyboard_arrow_down,
-          color: Colors.black54,
-        ),
-        style: const TextStyle(
-          fontSize: 15,
-          color: Colors.black,
-        ),
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-        ),
-        items: categories.map((category) {
-          return DropdownMenuItem<Category>(
-            alignment: Alignment.topLeft,
-            value: category,
-            child: Text(
-              category.categoryName!,
-              style: const TextStyle(
-                fontSize: 15,
-                color: Colors.black,
-              ),
-            ),
-          );
-        }).toList(),
-        onChanged: (Category? newValue) {
-          setState(() {
-            selectedCategory = newValue;
-            // Fetch subcategories based on selected category
-            if (newValue != null) {
-              setState(() {
-                //  _fetchSubcategories(newValue.categoryId!.toString());
-                check = true;
-              });
-            }
-          });
-        },
-      );
-    }
-
-    Widget subCategoryDropdown() {
-      var subcategoriesForSelectedCategory = subcategories
-          .where((subcategory) =>
-              subcategory.parentId == selectedCategory?.categoryId)
-          .toList();
-
-      return DropdownButtonFormField<SubCategory>(
-        isExpanded: true,
-        hint: lister != null
-            ? Text(
-                lister![0].serviceTitle.toString(),
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 15,
-                ),
-              )
-            : null,
-        value: selectedSubCategory,
-        icon: const Icon(
-          Icons.keyboard_arrow_down,
-          color: Colors.black54,
-        ),
-        style: const TextStyle(
-          fontSize: 15,
-          color: Colors.black,
-        ),
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-        ),
-        items: subcategoriesForSelectedCategory.map((subcategory) {
-          return DropdownMenuItem<SubCategory>(
-            alignment: Alignment.topLeft,
-            value: subcategory,
-            child: Text(
-              subcategory.subCategoryName!,
-              style: const TextStyle(
-                fontSize: 15,
-                color: Colors.black,
-              ),
-            ),
-          );
-        }).toList(),
-        onChanged: (SubCategory? newValue) {
-          setState(() {
-            selectedSubCategory = newValue;
-          });
-        },
-      );
-    }
-
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
 
@@ -401,9 +258,7 @@ class _EditServiceState extends State<EditService> {
             ),
           ],
         ),
-        body: lister != null &&
-                selectedCategory != null &&
-                selectedSubCategory != null
+        body: services != null
             ? SingleChildScrollView(
                 child: Column(
                   children: [
@@ -451,7 +306,7 @@ class _EditServiceState extends State<EditService> {
                             backgroundImage: imageFile != null
                                 ? FileImage(File(imageFile!.path))
                                 : NetworkImage(_api.baseURL +
-                                        lister![0].serviceImage.toString())
+                                        services[0].serviceImage.toString())
                                     as ImageProvider,
                             child: Align(
                               alignment: Alignment.bottomRight,
@@ -469,42 +324,18 @@ class _EditServiceState extends State<EditService> {
                             )),
                       ),
                     ),
-                    // StackedDropdown(
-                    //   width: w * 0.9,
-                    //   height: h * 0.07,
-                    //   showSubCategory:
-                    //       true, // Set to true if you want to show sub-category dropdown
-                    //   title: 'Category',
-                    //   dropdown: categoryDropdown(),
-                    //   fontSize:
-                    //       fonte, // Replace with your actual category dropdown widget
-                    // ),
-                    // StackedDropdown(
-                    //   width: w * 0.9,
-                    //   height: h * 0.07,
-                    //   showSubCategory:
-                    //       check, // Set to true when you want to show sub-category dropdown
-                    //   title: 'Sub-Category',
-                    //   dropdown:
-                    //       subCategoryDropdown(), // Replace with your actual sub-category dropdown widget
-                    //   fontSize:
-                    //       fonte, // Replace with your actual category dropdown widget
-                    // ),
-
                     StackedContainer(
                       text: 'Category',
-                      labelText: selectedCategory!.categoryName.toString(),
+                      labelText: services[0].categoryName.toString(),
                       suffixIcon: Icons.arrow_drop_down,
                       width: w * 0.9,
                       height: h * 0.07,
                       fontSize: fonte,
                       controller: titleController,
                     ),
-
                     StackedContainer(
                       text: 'SubCategory',
-                      labelText:
-                          selectedSubCategory!.subCategoryName.toString(),
+                      labelText: services[0].subCategoryName.toString(),
                       suffixIcon: Icons.arrow_drop_down,
                       width: w * 0.9,
                       height: h * 0.07,
@@ -513,7 +344,7 @@ class _EditServiceState extends State<EditService> {
                     ),
                     StackedContainer(
                       text: 'Title',
-                      labelText: lister![0].serviceTitle.toString(),
+                      labelText: services[0].serviceTitle.toString(),
                       suffixIcon: Icons.title,
                       width: w * 0.9,
                       height: h * 0.07,
@@ -522,7 +353,7 @@ class _EditServiceState extends State<EditService> {
                     ),
                     StackedContainer(
                       text: 'Description',
-                      labelText: lister![0].serviceDescription.toString(),
+                      labelText: services[0].serviceDescription.toString(),
                       //hint: "h"
                       suffixIcon: Icons.description,
                       width: w * 0.9,
@@ -533,7 +364,7 @@ class _EditServiceState extends State<EditService> {
                     ),
                     StackedContainer(
                       text: 'Price',
-                      labelText: lister![0].servicePrice.toString(),
+                      labelText: services[0].servicePrice.toString(),
                       suffixIcon: Icons.monetization_on_outlined,
                       width: w * 0.9,
                       height: h * 0.07,
@@ -551,7 +382,7 @@ class _EditServiceState extends State<EditService> {
                     ),
                     StackedContainer(
                       text: 'Duration',
-                      labelText: lister![0].duration.toString(),
+                      labelText: services[0].duration.toString(),
                       suffixIcon: Icons.date_range,
                       width: w * 0.9,
                       height: h * 0.07,

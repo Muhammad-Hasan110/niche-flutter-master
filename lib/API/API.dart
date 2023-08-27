@@ -13,10 +13,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class API {
   final baseURL = 'http://192.168.0.106:3000/';
-  final updatebuyer = 'http://192.168.0.106:3000/buyer/';
-  final updateseller = 'http://192.168.0.106:3000/seller/updateprofile';
-  final vieweseller = 'http://192.168.0.106:3000/seller/viewprofile';
-  final viewbuyer = 'http://192.168.0.106:3000/buyer/';
+  // final updatebuyer = 'http://192.168.0.102:3000/buyer/';
+  // final updateseller = 'http://192.168.0.102:3000/seller/updateprofile';
+  // final vieweseller = 'http://192.168.0.102:3000/seller/viewprofile';
+  // final viewbuyer = 'http://192.168.0.102:3000/buyer/';
 
   // final signupURL = 'http://192.168.0.105:3000/signup/user';
   // final resendVerificationURL = 'http://192.168.0.105:3000/verify/resend';
