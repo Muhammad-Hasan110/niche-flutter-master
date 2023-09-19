@@ -22,9 +22,8 @@ import 'package:dio/dio.dart' as dio; // Use a unique prefix for Dio library
 // import 'package:get/get_connect/http.dart' as getConnect;
 
 class EditService extends StatefulWidget {
-  const EditService({Key? key, required this.sid, required this.cid})
-      : super(key: key);
-  final String sid, cid;
+  const EditService({Key? key, required this.sid}) : super(key: key);
+  final String sid;
   @override
   State<EditService> createState() => _EditServiceState();
 }
@@ -35,8 +34,7 @@ class _EditServiceState extends State<EditService> {
   final getservice = GetOneService();
   File? imageFile;
   List<Service> services = [];
-  List<String> ids = ["1", "1", "2", "2", "2", "3", "3", "4", "4"];
-  //String id = ids[widget.cid]
+
   // Create a new Dio instance
 
   final ImagePicker picker = ImagePicker();
@@ -53,7 +51,10 @@ class _EditServiceState extends State<EditService> {
   @override
   void initState() {
     super.initState();
-    getservice.getapidata(services, widget.sid);
+    //  getservice.getapidata(services, widget.sid);
+    //print("service fetcghed");
+    //print(services);
+    //print("\n\n printed");
   }
 
   bool isNumeric(String str) {
@@ -64,26 +65,6 @@ class _EditServiceState extends State<EditService> {
     return double.tryParse(str) != null;
   }
 
-  // Future<void> getapidata() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String authToken = prefs.getString('token') ?? '';
-  //   // print(authToken);
-  //   String url = "${_api.baseURL}service/${widget.sid}";
-
-  //   var result = await https.get(Uri.parse(url), headers: {'Token': authToken});
-  //   print(result.body);
-  //   lister = await jsonDecode(result.body)
-  //       .map((item) => Service.fromJson(item))
-  //       .toList()
-  //       .cast<Service>();
-  //   print('lister');
-  //   print(lister?[0].serviceImage);
-
-  //   setState(() {
-  //     _fetchCategories();
-  //   });
-  // }
-
   Future<void> updateService() async {
     print("hello");
     try {
@@ -93,7 +74,7 @@ class _EditServiceState extends State<EditService> {
       dio.FormData formData = dio.FormData();
 
       Map<String, String> fields = {
-        'subCategory_id': widget.cid,
+        'subCategory_id': services[0].subCategoryId.toString(),
         'service_description': descriptionController.text,
         'service_title': titleController.text,
         'service_price': priceController.text,
@@ -258,180 +239,192 @@ class _EditServiceState extends State<EditService> {
             ),
           ],
         ),
-        body: services != null
-            ? SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.keyboard_backspace,
-                                color: Colors.black),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                          Text(
-                            "Edit Service",
-                            style: GoogleFonts.dmSans(
-                              fontSize: fontSize,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFF323B60),
-                              decoration: TextDecoration.none,
+        body: FutureBuilder(
+            future: getservice.getapidata(services, widget.sid),
+            builder: ((context, snapshot) {
+              if (snapshot.hasData) {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.keyboard_backspace,
+                                  color: Colors.black),
+                              onPressed: () => Navigator.pop(context),
                             ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.done, color: Colors.black),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-                      child: GestureDetector(
-                        onTap: () {
-                          showModalBottomSheet(
-                            backgroundColor: const Color(0xFFCEB290),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            context: context,
-                            builder: ((builder) => bottomSheet()),
-                          );
-                        },
-                        child: CircleAvatar(
-                            radius: h * 0.05 + w * 0.05,
-                            backgroundImage: imageFile != null
-                                ? FileImage(File(imageFile!.path))
-                                : NetworkImage(_api.baseURL +
-                                        services[0].serviceImage.toString())
-                                    as ImageProvider,
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: CircleAvatar(
-                                radius: h * 0.018 + w * 0.018,
-                                child: CircleAvatar(
-                                  radius: h * 0.015 + w * 0.015,
-                                  child: const Icon(
-                                    Icons.image,
-                                    color: Colors.white,
-                                  ),
-                                  backgroundColor: Colors.transparent,
-                                ),
+                            Text(
+                              "Edit Service",
+                              style: GoogleFonts.dmSans(
+                                fontSize: fontSize,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF323B60),
+                                decoration: TextDecoration.none,
                               ),
-                            )),
-                      ),
-                    ),
-                    StackedContainer(
-                      text: 'Category',
-                      labelText: services[0].categoryName.toString(),
-                      suffixIcon: Icons.arrow_drop_down,
-                      width: w * 0.9,
-                      height: h * 0.07,
-                      fontSize: fonte,
-                      controller: titleController,
-                    ),
-                    StackedContainer(
-                      text: 'SubCategory',
-                      labelText: services[0].subCategoryName.toString(),
-                      suffixIcon: Icons.arrow_drop_down,
-                      width: w * 0.9,
-                      height: h * 0.07,
-                      fontSize: fonte,
-                      controller: titleController,
-                    ),
-                    StackedContainer(
-                      text: 'Title',
-                      labelText: services[0].serviceTitle.toString(),
-                      suffixIcon: Icons.title,
-                      width: w * 0.9,
-                      height: h * 0.07,
-                      fontSize: fonte,
-                      controller: titleController,
-                    ),
-                    StackedContainer(
-                      text: 'Description',
-                      labelText: services[0].serviceDescription.toString(),
-                      //hint: "h"
-                      suffixIcon: Icons.description,
-                      width: w * 0.9,
-                      height: h * 0.2,
-                      fontSize: fonte,
-                      controller: descriptionController,
-                      allowResizing: true,
-                    ),
-                    StackedContainer(
-                      text: 'Price',
-                      labelText: services[0].servicePrice.toString(),
-                      suffixIcon: Icons.monetization_on_outlined,
-                      width: w * 0.9,
-                      height: h * 0.07,
-                      fontSize: fonte,
-                      controller: priceController,
-                    ),
-                    StackedContainer(
-                      text: 'Discount',
-                      labelText: 'Discount',
-                      suffixIcon: Icons.percent_outlined,
-                      width: w * 0.9,
-                      height: h * 0.07,
-                      fontSize: fonte,
-                      controller: discountController,
-                    ),
-                    StackedContainer(
-                      text: 'Duration',
-                      labelText: services[0].duration.toString(),
-                      suffixIcon: Icons.date_range,
-                      width: w * 0.9,
-                      height: h * 0.07,
-                      fontSize: fonte,
-                      controller: durationController,
-                      textInputType: TextInputType
-                          .number, // Add this line to set the keyboard type
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 20),
-                      child: Container(
-                        width: Get.width,
-                        height: Get.height * 0.06,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Color.fromARGB(255, 28, 77, 141),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.done, color: Colors.black),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
                         ),
-                        child: TextButton(
-                          onPressed: () async {
-                            // Validate data types
-                            // if (!isNumeric(priceController.text)) {
-                            //   showSnackBar(
-                            //       context, 'Price must be a valid number.');
-                            //   return;
-                            // }
-
-                            // if (!isNumeric(durationController.text)) {
-                            //   showSnackBar(
-                            //       context, 'Duration must be a valid number.');
-                            //   return;
-                            // }
-                            await updateService();
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+                        child: GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              backgroundColor: const Color(0xFFCEB290),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              context: context,
+                              builder: ((builder) => bottomSheet()),
+                            );
                           },
-                          child: Text(
-                            "Confirm",
-                            style: GoogleFonts.dmSans(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.none,
+                          child: CircleAvatar(
+                              radius: h * 0.05 + w * 0.05,
+                              backgroundImage: imageFile != null
+                                  ? FileImage(File(imageFile!.path))
+                                  : NetworkImage(_api.baseURL +
+                                          services[0].serviceImage.toString())
+                                      as ImageProvider,
+                              child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: CircleAvatar(
+                                  radius: h * 0.018 + w * 0.018,
+                                  child: CircleAvatar(
+                                    radius: h * 0.015 + w * 0.015,
+                                    child: const Icon(
+                                      Icons.image,
+                                      color: Colors.white,
+                                    ),
+                                    backgroundColor: Colors.transparent,
+                                  ),
+                                ),
+                              )),
+                        ),
+                      ),
+                      StackedContainer(
+                        enable: false,
+                        text: 'Category',
+                        labelText: services[0].categoryName.toString(),
+                        suffixIcon: Icons.arrow_drop_down,
+                        width: w * 0.9,
+                        height: h * 0.07,
+                        fontSize: fonte,
+                        controller: titleController,
+                      ),
+                      StackedContainer(
+                        enable: false,
+                        text: 'SubCategory',
+                        labelText: services[0].subCategoryName.toString(),
+                        suffixIcon: Icons.arrow_drop_down,
+                        width: w * 0.9,
+                        height: h * 0.07,
+                        fontSize: fonte,
+                        controller: titleController,
+                      ),
+                      StackedContainer(
+                        enable: true,
+                        text: 'Title',
+                        labelText: services[0].serviceTitle.toString(),
+                        suffixIcon: Icons.title,
+                        width: w * 0.9,
+                        height: h * 0.07,
+                        fontSize: fonte,
+                        controller: titleController,
+                      ),
+                      StackedContainer(
+                        enable: true,
+                        text: 'Description',
+                        labelText: services[0].serviceDescription.toString(),
+                        //hint: "h"
+                        suffixIcon: Icons.description,
+                        width: w * 0.9,
+                        height: h * 0.2,
+                        fontSize: fonte,
+                        controller: descriptionController,
+                        allowResizing: true,
+                      ),
+                      StackedContainer(
+                        enable: true,
+                        text: 'Price',
+                        labelText: services[0].servicePrice.toString(),
+                        suffixIcon: Icons.monetization_on_outlined,
+                        width: w * 0.9,
+                        height: h * 0.07,
+                        fontSize: fonte,
+                        controller: priceController,
+                      ),
+                      StackedContainer(
+                        enable: true,
+                        text: 'Discount',
+                        labelText: 'Discount',
+                        suffixIcon: Icons.percent_outlined,
+                        width: w * 0.9,
+                        height: h * 0.07,
+                        fontSize: fonte,
+                        controller: discountController,
+                      ),
+                      StackedContainer(
+                        enable: true,
+                        text: 'Duration',
+                        labelText: services[0].duration.toString(),
+                        suffixIcon: Icons.date_range,
+                        width: w * 0.9,
+                        height: h * 0.07,
+                        fontSize: fonte,
+                        controller: durationController,
+                        textInputType: TextInputType
+                            .number, // Add this line to set the keyboard type
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 20),
+                        child: Container(
+                          width: Get.width,
+                          height: Get.height * 0.06,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Color.fromARGB(255, 28, 77, 141),
+                          ),
+                          child: TextButton(
+                            onPressed: () async {
+                              // Validate data types
+                              // if (!isNumeric(priceController.text)) {
+                              //   showSnackBar(
+                              //       context, 'Price must be a valid number.');
+                              //   return;
+                              // }
+
+                              // if (!isNumeric(durationController.text)) {
+                              //   showSnackBar(
+                              //       context, 'Duration must be a valid number.');
+                              //   return;
+                              // }
+                              await updateService();
+                            },
+                            child: Text(
+                              "Confirm",
+                              style: GoogleFonts.dmSans(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.none,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              )
-            : Container());
+                    ],
+                  ),
+                );
+              }
+              return Center(child: CircularProgressIndicator());
+            })));
   }
 }

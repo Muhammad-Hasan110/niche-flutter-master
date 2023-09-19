@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_niche2/API/API.dart';
 import 'package:login_niche2/Data%20Integration/getService.dart';
 import 'package:login_niche2/DataModler/servicecard.dart';
+import 'package:login_niche2/DataModler/servicedraft.dart';
 import 'package:login_niche2/SELLER/SellerHome/widgets/serviceCard.dart';
 import 'package:login_niche2/SELLER/sellerServices/add_service.dart';
 import 'package:login_niche2/SELLER/sellerServices/edit_service.dart';
@@ -18,7 +19,9 @@ class Services extends StatefulWidget {
 class _ServicesState extends State<Services> {
   bool _isShown = true;
   List<Service> services = [];
-  final getservice = GetService();
+  List<Draft> draftservices = [];
+
+  final get = Get_Api();
 
   final _api = API();
 
@@ -138,7 +141,7 @@ class _ServicesState extends State<Services> {
           body: TabBarView(
             children: [
               FutureBuilder(
-                  future: getservice.getapidata(services),
+                  future: get.getserviceall(services),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
@@ -162,9 +165,6 @@ class _ServicesState extends State<Services> {
                                       builder: (context) => EditService(
                                         sid: services[index]
                                             .serviceId
-                                            .toString(),
-                                        cid: services[index]
-                                            .subCategoryId
                                             .toString(),
                                       ),
                                     ),
@@ -195,7 +195,7 @@ class _ServicesState extends State<Services> {
                     return Center(child: CircularProgressIndicator());
                   }),
               FutureBuilder(
-                  future: getservice.getapidata(services),
+                  future: get.getdraftall(draftservices),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
@@ -203,25 +203,28 @@ class _ServicesState extends State<Services> {
                           itemBuilder: (BuildContext context, int index) {
                             return Stack(children: [
                               ServiceCard(
-                                serviceName:
-                                    services[index].serviceTitle.toString(),
-                                serviceRatings: 4.9,
-                                serviceTime: services[index].duration!.toInt(),
+                                serviceName: draftservices[index]
+                                    .serviceTitle
+                                    .toString(),
+                                serviceRatings: double.parse(
+                                    draftservices[index]
+                                        .totalRating
+                                        .toString()),
+                                serviceTime:
+                                    draftservices[index].duration!.toInt(),
                                 servicePrice: double.parse(
-                                    services[index].duration!.toString()),
+                                    draftservices[index].duration!.toString()),
                                 serviceImage: _api.baseURL +
-                                    services[index].serviceImage.toString(),
+                                    draftservices[index]
+                                        .serviceImage
+                                        .toString(),
                                 onEdit: () {
-                                  print('edit');
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => EditService(
-                                        sid: services[index]
+                                        sid: draftservices[index]
                                             .serviceId
-                                            .toString(),
-                                        cid: services[index]
-                                            .subCategoryId
                                             .toString(),
                                       ),
                                     ),
@@ -238,8 +241,9 @@ class _ServicesState extends State<Services> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => SellerserviceWidget(
-                                          sid:
-                                              services[0].serviceId.toString()),
+                                          sid: draftservices[index]
+                                              .serviceId
+                                              .toString()),
                                     ),
                                   );
                                 },

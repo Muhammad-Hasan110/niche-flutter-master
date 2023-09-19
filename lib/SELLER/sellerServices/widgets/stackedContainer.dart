@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class StackedContainer extends StatelessWidget {
+  final bool enable;
   final String text;
   final String labelText;
   final IconData suffixIcon;
@@ -12,6 +13,7 @@ class StackedContainer extends StatelessWidget {
   final bool allowResizing;
   final TextInputType textInputType;
   StackedContainer({
+    required this.enable,
     required this.text,
     required this.labelText,
     required this.suffixIcon,
@@ -40,6 +42,7 @@ class StackedContainer extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(right: 3, top: 3, left: 25),
             child: TextField(
+              enabled: enable,
               keyboardType: textInputType,
               controller: controller,
               textAlign: TextAlign.start,

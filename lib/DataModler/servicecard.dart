@@ -19,6 +19,7 @@ class Service {
   String? categoryName;
   int? subCategoryId;
   String? subCategoryName;
+  int? isFeatured;
 
   Service(
       {this.serviceId,
@@ -40,7 +41,8 @@ class Service {
       this.categoryId,
       this.categoryName,
       this.subCategoryId,
-      this.subCategoryName});
+      this.subCategoryName,
+      this.isFeatured});
 
   Service.fromJson(Map<String, dynamic> json) {
     serviceId = json['service_id'];
@@ -63,6 +65,7 @@ class Service {
     categoryName = json['category_name'];
     subCategoryId = json['subCategory_id'];
     subCategoryName = json['subCategory_name'];
+    isFeatured = json['is_featured'];
   }
 
   Map<String, dynamic> toJson() {
@@ -87,6 +90,7 @@ class Service {
     data['category_name'] = this.categoryName;
     data['subCategory_id'] = this.subCategoryId;
     data['subCategory_name'] = this.subCategoryName;
+    data['is_featured'] = this.isFeatured;
     return data;
   }
 }

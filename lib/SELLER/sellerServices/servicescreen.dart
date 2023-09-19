@@ -226,10 +226,8 @@ class _SellerserviceWidgetState extends State<SellerserviceWidget> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       EditService(
-                                                          sid: widget.sid,
-                                                          cid: lister![0]
-                                                              .subCategoryId
-                                                              .toString())));
+                                                        sid: widget.sid,
+                                                      )));
                                         },
                                         text: 'Edit',
                                         options: FFButtonOptions(

@@ -5,6 +5,7 @@ import 'package:login_niche2/BUYER/buyerHome/buyerhome.dart';
 import 'package:login_niche2/BUYER/buyerProfile1/buyer_profile_screen.dart';
 import 'package:login_niche2/BUYER/buyerSearch/searchwidget.dart';
 import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
+import 'package:login_niche2/BUYER/buyerjobpost/buyerjobpost.dart';
 
 class NavbarBuyer extends StatefulWidget {
   const NavbarBuyer({Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class _NavbarBuyerState extends State<NavbarBuyer> {
   List<Widget> tabItems = [
     const BuyerhomeWidget(),
     const SearchWidget(),
-    Container(),
+    BuyerjobpostsWidget(),
     Container(),
     const BuyerProfWidget(),
   ];

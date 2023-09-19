@@ -28,7 +28,7 @@ class _SellerHomeState extends State<SellerHome> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<Service> services = [];
-  final getservice = GetService();
+  final get = Get_Api();
 
   final _api = API();
 
@@ -170,7 +170,7 @@ class _SellerHomeState extends State<SellerHome> {
                   child: Column(
                     children: [
                       FutureBuilder(
-                          future: getservice.getapidata(services),
+                          future: get.getserviceall(services),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return Container(
@@ -267,19 +267,21 @@ class _SellerHomeState extends State<SellerHome> {
                                           : index <= 2 && index > 0
                                               ? Stack(children: [
                                                   ServiceCard(
-                                                    serviceName: services[index]
-                                                        .serviceTitle
-                                                        .toString(),
+                                                    serviceName:
+                                                        services[(index - 1)]
+                                                            .serviceTitle
+                                                            .toString(),
                                                     serviceRatings: 4.9,
-                                                    serviceTime: services[index]
-                                                        .duration!
-                                                        .toInt(),
-                                                    servicePrice: double.parse(
-                                                        services[index]
+                                                    serviceTime:
+                                                        services[(index - 1)]
                                                             .duration!
+                                                            .toInt(),
+                                                    servicePrice: double.parse(
+                                                        services[(index - 1)]
+                                                            .servicePrice
                                                             .toString()),
                                                     serviceImage: _api.baseURL +
-                                                        services[index]
+                                                        services[(index - 1)]
                                                             .serviceImage
                                                             .toString(),
                                                     onEdit: () {
@@ -289,11 +291,9 @@ class _SellerHomeState extends State<SellerHome> {
                                                         MaterialPageRoute(
                                                           builder: (context) =>
                                                               EditService(
-                                                            sid: services[index]
+                                                            sid: services[
+                                                                    (index - 1)]
                                                                 .serviceId
-                                                                .toString(),
-                                                            cid: services[index]
-                                                                .subCategoryId
                                                                 .toString(),
                                                           ),
                                                         ),
